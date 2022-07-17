@@ -1,0 +1,27 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:14.1-alpine
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=sample_db
+    ports:
+      - '4323:5432'
+    volumes: 
+      - ./pg/db_data:/var/lib/postgresql/data   
+  api:
+    container_name: quotes-api
+    build: .
+    depends_on:
+      - db
+    ports:
+      - 3001:3001
+    links:
+      - db
+    volumes:
+      - './:/src'
+volumes:
+  db:
+    driver: local
